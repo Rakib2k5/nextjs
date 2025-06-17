@@ -1,0 +1,26 @@
+services:
+  app:
+    restart: unless-stopped
+    domainname: demo.cloudjam.xyz
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    #environment:
+    networks:
+      default:
+        aliases:
+          - www.cloudjam.xyz
+
+    ports:
+      - target: 3000
+        mode: ingress
+        published: 3000
+
+    healthcheck:
+      test: wget -q --spider http://localhost:3000/ || exit 1
+      interval: 10s
+
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.50'
